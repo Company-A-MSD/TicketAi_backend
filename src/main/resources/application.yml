@@ -5,3 +5,16 @@ spring:
     mongodb:
       uri: ${MONGODB_URI}
       database: ${MONGODB_DATABASE}
+
+  mail:
+    host: smtp-relay.brevo.com
+    port: 587
+    username: 8d0901001@smtp-brevo.com
+    password: HxRFkEUyd0h7j5YW
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable: true
+          required: true
