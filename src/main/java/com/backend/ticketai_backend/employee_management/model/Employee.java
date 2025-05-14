@@ -1,4 +1,4 @@
-package employee_management.model;
+package com.backend.ticketai_backend.employee_management.model;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
