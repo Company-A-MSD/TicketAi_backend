@@ -21,4 +21,5 @@ public class DatabaseController {
             return "Database connection failed: " + e.getMessage();
         }
     }
+
 }
