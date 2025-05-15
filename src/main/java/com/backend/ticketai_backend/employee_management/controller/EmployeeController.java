@@ -5,13 +5,18 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.PatchMapping;
+//import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.RequestBody;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import com.backend.ticketai_backend.notification.MailDetailsDTO;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import com.backend.ticketai_backend.employee_management.dto.LoginRequestDto;
 import com.backend.ticketai_backend.employee_management.model.Employee;
@@ -28,7 +33,11 @@ public class EmployeeController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private JavaMailSender javaMailSender;
+
     // 1. LOGIN
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginData) {
         return employeeService.login(loginData.getEmail(), loginData.getPassword())
@@ -39,13 +48,40 @@ public class EmployeeController {
                 .orElse(ResponseEntity.status(401).body(Map.of("message", "Invalid credentials")));
     }
 
-    // 2. UPDATE AVAILABILITY
-    @PatchMapping("/availability/{id}")
-    public ResponseEntity<?> updateAvailability(@PathVariable String id, @RequestBody Map<String, Boolean> statusData) {
-        Boolean status = statusData.get("availability");
-        Employee updated = employeeService.updateAvailability(id, status);
-        return ResponseEntity.ok(Map.of("message", "Status updated", "employee_id", id, "availability", updated.getAvailability()));
-    }
+
+    @PatchMapping("/status_update/{id}")
+    public ResponseEntity<Map<String, String>> updateStatus(@PathVariable String id, @RequestBody Map<String, String> statusData) {
+        String status = statusData.get("status");
+        String toEmail = statusData.get("toEmail");      // Email of employee to notify
+        String subject = statusData.get("subject");      // Email subject
+        String message = statusData.get("message");      // Email message
+
+        // Create DTO from input data
+        MailDetailsDTO mailDetailsDTO = new MailDetailsDTO(toEmail, message, subject);
+
+        try {
+            SimpleMailMessage email = new SimpleMailMessage();
+            email.setTo(mailDetailsDTO.getToMail());
+            email.setFrom("sahanudayangaof@gmail.com");
+            email.setSubject(mailDetailsDTO.getSubject());
+            email.setText(mailDetailsDTO.getMessage());
+            javaMailSender.send(email);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of(
+                    "message", "Status updated, but failed to send email",
+                    "employee_id", id,
+                    "status", status,
+                    "error", e.getMessage()
+            ));
+        }
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Status updated and confirmation email sent",
+                "employee_id", id,
+                "status", status
+        ));
+  }
+
 
     // 3. GET ALL EMPLOYEES
     @GetMapping
