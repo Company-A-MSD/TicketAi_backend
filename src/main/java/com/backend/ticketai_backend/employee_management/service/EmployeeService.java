@@ -41,5 +41,6 @@ public class EmployeeService {
         emp.setAvailability(data.getAvailability());
         emp.setAssigned_categories(data.getAssigned_categories());
         return employeeRepository.save(emp);
+        
     }
 }
