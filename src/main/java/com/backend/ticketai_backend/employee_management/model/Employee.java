@@ -1,16 +1,15 @@
 package com.backend.ticketai_backend.employee_management.model;
 
-import org.bson.types.ObjectId;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
 
 @Document(collection = "employees")
 public class Employee {
 
     @Id
-    private ObjectId _id;
+    private String _id;
 
     private String role;
     private List<String> assigned_categories;
@@ -22,11 +21,11 @@ public class Employee {
 
     // Getters and Setters
 
-    public ObjectId get_id() {
+    public String get_id() {
         return _id;
     }
 
-    public void set_id(ObjectId _id) {
+    public void set_id(String _id) {
         this._id = _id;
     }
 
