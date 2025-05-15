@@ -41,10 +41,10 @@ public class EmployeeController {
 
     // 2. UPDATE AVAILABILITY
     @PatchMapping("/availability/{id}")
-    public ResponseEntity<?> updateAvailability(@PathVariable String id, @RequestBody Map<String, String> statusData) {
-        String status = statusData.get("status");
+    public ResponseEntity<?> updateAvailability(@PathVariable String id, @RequestBody Map<String, Boolean> statusData) {
+        Boolean status = statusData.get("availability");
         Employee updated = employeeService.updateAvailability(id, status);
-        return ResponseEntity.ok(Map.of("message", "Status updated", "employee_id", id, "status", updated.getAvailability()));
+        return ResponseEntity.ok(Map.of("message", "Status updated", "employee_id", id, "availability", updated.getAvailability()));
     }
 
     // 3. GET ALL EMPLOYEES
@@ -56,7 +56,9 @@ public class EmployeeController {
                 "name", (Object) emp.getName(),
                 "email", (Object) emp.getEmail(),
                 "role", (Object) emp.getRole(),
-                "status", (Object) emp.getAvailability()
+                "availability", (Object) emp.getAvailability(),
+                "assigned_categories", (Object) emp.getAssigned_categories(),
+                "workload", (Object) emp.getWorkload()
         )).toList();
         return ResponseEntity.ok(result);
     }
@@ -71,7 +73,7 @@ public class EmployeeController {
                         "email", emp.getEmail(),
                         "role", emp.getRole(),
                         "assigned_categories", emp.getAssigned_categories(),
-                        "status", emp.getAvailability()
+                        "availability", emp.getAvailability()
                 ))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

@@ -27,9 +27,9 @@ public class EmployeeService {
         return employeeRepository.findById(id);
     }
 
-    public Employee updateAvailability(String id, String status) {
+    public Employee updateAvailability(String id, Boolean status) {
         Employee emp = employeeRepository.findById(id).orElseThrow();
-        emp.setAvailability(status.equals("available"));
+        emp.setAvailability(status);
         return employeeRepository.save(emp);
     }
 
