@@ -4,8 +4,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/TicketAi
-      #uri: ${MONGODB_URI}
-      #database: ${MONGODB_DATABASE}
 
   mail:
     host: smtp-relay.brevo.com
