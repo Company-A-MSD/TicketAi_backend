@@ -19,6 +19,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import com.backend.ticketai_backend.employee_management.dto.LoginRequestDto;
+import com.backend.ticketai_backend.employee_management.model.Employee;
+import com.backend.ticketai_backend.employee_management.service.EmployeeService;
 import com.backend.ticketai_backend.util.JwtUtil;
 
 @RestController
@@ -26,20 +28,26 @@ import com.backend.ticketai_backend.util.JwtUtil;
 public class EmployeeController {
 
     @Autowired
+    private EmployeeService employeeService;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     @Autowired
     private JavaMailSender javaMailSender;
 
+    // 1. LOGIN
+
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequestDto loginData) {
-        // Authentication logic (mocked)
-        String email = loginData.getEmail();
-        String password = loginData.getPassword();
-        // For demonstration, assuming a successful login
-        String token = jwtUtil.generateToken(email, "ADMIN", "emp_01");
-        return ResponseEntity.ok(Map.of("token", token));
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginData) {
+        return employeeService.login(loginData.getEmail(), loginData.getPassword())
+                .map(emp -> {
+                    String token = jwtUtil.generateToken(emp.getEmail(), emp.getRole(), emp.get_id());
+                    return ResponseEntity.ok(Map.of("token", token));
+                })
+                .orElse(ResponseEntity.status(401).body(Map.of("message", "Invalid credentials")));
     }
+
 
     @PatchMapping("/status_update/{id}")
     public ResponseEntity<Map<String, String>> updateStatus(@PathVariable String id, @RequestBody Map<String, String> statusData) {
@@ -72,33 +80,45 @@ public class EmployeeController {
                 "employee_id", id,
                 "status", status
         ));
-    }
+  }
 
+
+    // 3. GET ALL EMPLOYEES
     @GetMapping
-    public ResponseEntity<List<Map<String, String>>> getAllEmployees() {
-        List<Map<String, String>> employees = List.of(
-            Map.of("employee_id", "emp_01", "name", "Jane Smith", "email", "jane@example.com", "role", "Support Agent", "status", "available"),
-            Map.of("employee_id", "emp_02", "name", "John Doe", "email", "john@example.com", "role", "Support Agent", "status", "busy")
-        );
-        return ResponseEntity.ok(employees);
+    public ResponseEntity<?> getAllEmployees() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        List<Map<String, Object>> result = employees.stream().map(emp -> Map.of(
+                "employee_id", (Object) emp.get_id(),
+                "name", (Object) emp.getName(),
+                "email", (Object) emp.getEmail(),
+                "role", (Object) emp.getRole(),
+                "availability", (Object) emp.getAvailability(),
+                "assigned_categories", (Object) emp.getAssigned_categories(),
+                "workload", (Object) emp.getWorkload()
+        )).toList();
+        return ResponseEntity.ok(result);
     }
 
+    // 4. GET EMPLOYEE BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getEmployeeById(@PathVariable String id) {
-        Map<String, Object> employee = Map.of(
-            "employee_id", id,
-            "name", "John Doe",
-            "email", "john@example.com",
-            "role", "Support Agent",
-            "assigned_categories", List.of("Billing", "Technical"),
-            "status", "available"
-        );
-        return ResponseEntity.ok(employee);
+    public ResponseEntity<?> getEmployeeById(@PathVariable String id) {
+        return employeeService.getEmployeeById(id)
+                .map(emp -> Map.of(
+                        "employee_id", emp.get_id(),
+                        "name", emp.getName(),
+                        "email", emp.getEmail(),
+                        "role", emp.getRole(),
+                        "assigned_categories", emp.getAssigned_categories(),
+                        "availability", emp.getAvailability()
+                ))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
+    // 5. UPDATE EMPLOYEE DETAILS
     @PatchMapping("/{id}")
-    public ResponseEntity<Map<String, String>> updateEmployee(@PathVariable String id, @RequestBody Map<String, Object> employeeData) {
-        // Mock update logic
-        return ResponseEntity.ok(Map.of("message", "Employee updated successfully", "employee_id", id));
+    public ResponseEntity<?> updateEmployee(@PathVariable String id, @RequestBody Employee updatedData) {
+        Employee updated = employeeService.updateEmployee(id, updatedData);
+        return ResponseEntity.ok(Map.of("message", "Employee updated successfully", "employee_id", updated.get_id()));
     }
 }
