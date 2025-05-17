@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/mail")
+@RequestMapping("api/notifications")
 public class MailController {
 
     @Autowired
     private JavaMailSender javaMailSender;
 
-    @PostMapping("/send")
+    @PostMapping("/")
     public String sendEmail(@RequestBody MailDetailsDTO mailDetailsDTO) {
 
         try {

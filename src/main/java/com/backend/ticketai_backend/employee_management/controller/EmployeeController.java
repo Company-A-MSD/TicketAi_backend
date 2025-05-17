@@ -109,7 +109,8 @@ public class EmployeeController {
                         "email", emp.getEmail(),
                         "role", emp.getRole(),
                         "assigned_categories", emp.getAssigned_categories(),
-                        "availability", emp.getAvailability()
+                        "availability", emp.getAvailability(),
+                        "workload",emp.getWorkload()
                 ))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
