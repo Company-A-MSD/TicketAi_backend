@@ -26,7 +26,7 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
         .requestMatchers("/api/employees/login/**","/","/api/register","/api/login").permitAll()
-        .requestMatchers("/api/employees/**","/api/tickets/all","/api/users/**","/api/delete_user").hasRole("ADMIN")
+        .requestMatchers("/api/employees/**","/api/tickets/all","/api/users/**","/api/delete_user/**").hasRole("ADMIN")
         .requestMatchers("/api/tickets/assigned","/api/notifications/on-ticket-update").hasRole("EMPLOYEE")
         .requestMatchers("/api/tickets","/api/delete_account","/api/notifications").hasRole("USER")
         .requestMatchers(HttpMethod.GET,"/api/tickets/:ticketId").hasAnyRole("USER","EMPLOYEE","ADMIN")
