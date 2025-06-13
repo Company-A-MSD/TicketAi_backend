@@ -5,13 +5,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PatchMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
 import com.backend.ticketai_backend.employee_management.dto.LoginRequestDto;
@@ -29,13 +22,15 @@ public class EmployeeController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    
+
     // 1. LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginData) {
         return employeeService.login(loginData.getEmail(), loginData.getPassword())
                 .map(emp -> {
                     String token = jwtUtil.generateToken(emp.getEmail(), emp.getRole(), emp.get_id());
-                    return ResponseEntity.ok(Map.of("token", token));
+                    return ResponseEntity.ok(Map.of("token", token,"role",emp.getRole()));
                 })
                 .orElse(ResponseEntity.status(401).body(Map.of("message", "Invalid credentials")));
     }

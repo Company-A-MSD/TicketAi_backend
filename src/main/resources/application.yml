@@ -3,11 +3,8 @@ server:
 spring:
   data:
     mongodb:
-
-      uri: mongodb://localhost:27017/TicketAi
-
-      #uri: ${MONGODB_URI}
-      #database: ${MONGODB_DATABASE}
+      uri: ${MONGODB_URI}
+      database: ${MONGODB_DATABASE}
 
 
   mail:
@@ -22,3 +19,9 @@ spring:
         starttls:
           enable: true
           required: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

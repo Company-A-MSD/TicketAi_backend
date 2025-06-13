@@ -1,21 +1,22 @@
 package com.backend.ticketai_backend.ticket_management.model;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.Data;
 
-@Data
 @Document(collection = "Tickets")
 public class Ticket {
 
+    @Id
     private String _id;
+
     private String subject;
     private String description;
     private String status;
     private String priority;
     private String category;
-    private String assigned_to;
-    private String created_by;
+    private String assigned;
+    private String created;
     private String created_at;
     private String updated_at;
     private String channel;
@@ -71,19 +72,19 @@ public class Ticket {
     }
 
     public String getAssigned_to() {
-        return assigned_to;
+        return assigned;
     }
 
-    public void setAssigned_to(String assigned_to) {
-        this.assigned_to = assigned_to;
+    public void setAssigned_to(String assigned) {
+        this.assigned = assigned;
     }
 
     public String getCreated_by() {
-        return created_by;
+        return created;
     }
 
-    public void setCreated_by(String created_by) {
-        this.created_by = created_by;
+    public void setCreated_by(String created) {
+        this.created = created;
     }
 
     public String getCreated_at() {
