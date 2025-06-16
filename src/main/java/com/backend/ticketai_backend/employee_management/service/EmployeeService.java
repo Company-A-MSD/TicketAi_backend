@@ -41,6 +41,38 @@ public class EmployeeService {
         emp.setAvailability(data.getAvailability());
         emp.setAssigned_categories(data.getAssigned_categories());
         return employeeRepository.save(emp);
-        
     }
-}
+
+    public Employee TicketAssignmet(String category)
+    {
+        List<Employee> employees = employeeRepository.findByAssignedCategories(category);
+        if (employees.isEmpty()) {
+            return null; // No employee available for this category
+        }
+
+        
+        int numberOfEmployees = employees.size();
+        for (int i = 0; i < numberOfEmployees; i++) 
+        {
+            if (employees.get(i).getAvailability()) 
+            {
+                int workload = 0;
+                try 
+                {
+                    workload = Integer.parseInt(employees.get(i).getWorkload());
+                    if (workload < 5) 
+                    {
+                        employees.get(i).setWorkload(String.valueOf(workload + 1)); // Increment workload
+                        employeeRepository.save(employees.get(i)); // Save updated employee
+                        return employees.get(i); // Return the first available employee with workload < 5
+                    }
+        
+                }catch (NumberFormatException e) {
+                    // Handle the case where workload is not a valid integer
+                    System.err.println("Invalid workload format for employee: " + employees.get(i).getEmail());
+                }
+            }
+        }  
+        return null; // No employee available with workload < 5                
+    } 
+}   

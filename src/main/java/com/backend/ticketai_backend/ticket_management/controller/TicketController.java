@@ -17,7 +17,6 @@ import io.jsonwebtoken.Jwt;
 import java.util.List;
 import java.util.Map;
 
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,7 +61,6 @@ public class TicketController
             return ResponseEntity.notFound().build();
         }
 
-        
         List<Map<String, Object>> result = tickets.stream().map(ticket -> Map.of(
                 "ticket_id", (Object)  ticket.get_id(),
                 "title", (Object) ticket.getSubject(),
