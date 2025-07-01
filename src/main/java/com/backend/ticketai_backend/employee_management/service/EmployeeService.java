@@ -23,12 +23,12 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
-    public Optional<Employee> getEmployeeById(String id) {
-        return employeeRepository.findById(id);
+    public Employee getEmployeeById(String id) {
+        return employeeRepository.findById(id).orElse(null);
     }
 
     public Employee updateAvailability(String id, Boolean status) {
-        Employee emp = employeeRepository.findById(id).orElseThrow();
+        Employee emp = employeeRepository.findById(id).orElse(null);
         emp.setAvailability(status);
         return employeeRepository.save(emp);
     }

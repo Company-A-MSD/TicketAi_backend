@@ -32,7 +32,7 @@ public class EmployeeController {
                     String token = jwtUtil.generateToken(emp.getEmail(), emp.getRole(), emp.get_id());
                     return ResponseEntity.ok(Map.of("token", token,"role",emp.getRole()));
                 })
-                .orElse(ResponseEntity.status(401).body(Map.of("message", "Invalid credentials")));
+                .orElse(ResponseEntity.ok(Map.of("message", "Invalid credentials")));
     }
 
 
@@ -40,6 +40,11 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<?> getAllEmployees() {
         List<Employee> employees = employeeService.getAllEmployees();
+
+        if(employees.isEmpty()) {
+            return ResponseEntity.ok(Map.of("message", "No employees found"));
+        }
+
         List<Map<String, Object>> result = employees.stream().map(emp -> Map.of(
                 "employee_id", (Object) emp.get_id(),
                 "name", (Object) emp.getName(),
@@ -55,18 +60,23 @@ public class EmployeeController {
     // 4. GET EMPLOYEE BY ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getEmployeeById(@PathVariable String id) {
-        return employeeService.getEmployeeById(id)
-                .map(emp -> Map.of(
-                        "employee_id", emp.get_id(),
-                        "name", emp.getName(),
-                        "email", emp.getEmail(),
-                        "role", emp.getRole(),
-                        "assigned_categories", emp.getAssigned_categories(),
-                        "availability", emp.getAvailability(),
-                        "workload",emp.getWorkload()
-                ))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+
+        Employee employee = employeeService.getEmployeeById(id);
+        if (employee != null) {
+           return ResponseEntity.ok(Map.of(
+                "employee_id", employee.get_id(),
+                "name", employee.getName(),
+                "email", employee.getEmail(),
+                "role", employee.getRole(),
+                "availability", employee.getAvailability(),
+                "assigned_categories", employee.getAssigned_categories(),
+                "workload", employee.getWorkload()
+            ));
+        }
+        else {
+            return ResponseEntity.ok(Map.of("message", "Employee not found"));
+        }
+      
     }
 
     // 5. UPDATE EMPLOYEE DETAILS
