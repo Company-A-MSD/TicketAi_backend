@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(token)) {
                 Claims claims = jwtUtil.getClaimsFromToken(token);
-                String username = claims.getSubject();
+                // String email = claims.getSubject();
                 String role = claims.get("role", String.class);
                 String id = claims.get("id", String.class);
 

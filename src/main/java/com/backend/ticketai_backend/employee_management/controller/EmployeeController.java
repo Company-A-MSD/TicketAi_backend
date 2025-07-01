@@ -22,8 +22,6 @@ public class EmployeeController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    
-
     // 1. LOGIN
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginData) {

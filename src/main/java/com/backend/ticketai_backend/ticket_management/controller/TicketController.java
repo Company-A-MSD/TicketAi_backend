@@ -13,7 +13,6 @@ import com.backend.ticketai_backend.ticket_management.service.TicketService;
 import com.backend.ticketai_backend.util.JwtUtil;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 
 import java.util.List;
 import java.util.Map;
