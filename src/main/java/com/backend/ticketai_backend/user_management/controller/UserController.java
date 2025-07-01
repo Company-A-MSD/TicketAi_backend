@@ -38,6 +38,21 @@ public class UserController {
             }).toList()
        );
    }
+
+   @GetMapping("/users/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable String id) {
+        User user = userService.getUserById(id);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(
+            Map.of(
+                "id", user.getId(),
+                "name", user.getName(),
+                "email", user.getEmail()
+            )
+        );
+    }
    
 
 }
