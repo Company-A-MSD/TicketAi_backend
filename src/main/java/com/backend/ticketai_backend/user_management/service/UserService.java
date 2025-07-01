@@ -21,6 +21,14 @@ public class UserService {
     public User getUserById(String id) {
         return userRepo.findById(id).orElse(null);
     }
+    
+    public boolean deleteUserById(String id) {
+        if (userRepo.existsById(id)) {
+            userRepo.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 
     
 }

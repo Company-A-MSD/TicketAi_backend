@@ -53,6 +53,16 @@ public class UserController {
             )
         );
     }
-   
+    // DELETE /api/users/{id}
+    @DeleteMapping("/delete_user/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable String id) {
+        boolean deleted = userService.deleteUserById(id);
+        if (deleted) {
+            return ResponseEntity.ok(Map.of("message", "User deleted successfully", "user_id", id));
+        } else {
+            return ResponseEntity.status(404).body(Map.of("error", "User not found"));
+        }
+    }
+
 
 }
