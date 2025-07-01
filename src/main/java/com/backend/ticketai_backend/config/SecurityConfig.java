@@ -25,12 +25,12 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
-        .requestMatchers("/api/employees/login/**","/","/api/register","/api/login").permitAll()
-        .requestMatchers("/api/employees/**","/api/tickets/all","/api/users/**","/api/delete_user").hasRole("ADMIN")
+        .requestMatchers("/api/employees/login/**","/","/api/register","/api/login","/ai/generate").permitAll()
+        .requestMatchers("/api/users/**","/api/delete_user/**","/api/employees/**","api/tickets/all").hasRole("ADMIN")
         .requestMatchers("/api/tickets/assigned","/api/notifications/on-ticket-update").hasRole("EMPLOYEE")
         .requestMatchers("/api/tickets","/api/delete_account","/api/notifications").hasRole("USER")
-        .requestMatchers(HttpMethod.GET,"/api/tickets/:ticketId").hasAnyRole("USER","EMPLOYEE","ADMIN")
-        .requestMatchers(HttpMethod.PATCH,"/api/tickets/:ticketId").hasAnyRole("EMPLOYEE","ADMIN")
+        .requestMatchers(HttpMethod.GET,"/api/tickets/{id}").hasAnyRole("USER","EMPLOYEE","ADMIN")
+        .requestMatchers(HttpMethod.PATCH,"/api/tickets/{id}").hasAnyRole("EMPLOYEE","ADMIN")
         .anyRequest().authenticated()
     )
     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
