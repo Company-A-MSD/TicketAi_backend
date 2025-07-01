@@ -48,4 +48,9 @@ public class TicketService {
         return ticketRepo.findAll();
     }
 
+    public Ticket createTicket(Ticket ticket) {
+        // Logic to create a new ticket
+        return ticketRepo.save(ticket);
+    }
+
 }

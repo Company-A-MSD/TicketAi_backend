@@ -1,8 +1,9 @@
-package com.backend.ticketai_backend.aiservice;
+package com.backend.ticketai_backend.aiservice.service;
 
 import java.util.Map;
 
 import org.springframework.ai.azure.openai.AzureOpenAiChatModel;
+import org.springframework.ai.huggingface.HuggingfaceChatModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,25 +18,27 @@ public class ChatController {
             "User Query: <user_query>\n" +
             "You have to return the category in the following format:\n" +
             "Category: <category>\n" ;
+            
+    private HuggingfaceChatModel chatModel;
 
-    // public ChatController(HuggingfaceChatModel chatModel) {
-    //     this.chatModel = chatModel;
-    // }
-
-    // @GetMapping("/ai/generate")
-    // public Map<String, Object> generate(@RequestParam(value = "message", defaultValue = "general") String message) {
-    //     return Map.of("generation", this.chatModel.call(system_prompt + "User Query: " + message));
-    // }
-
-    private final AzureOpenAiChatModel chatModel;
-
-    public ChatController(AzureOpenAiChatModel chatModel) {
+    public ChatController(HuggingfaceChatModel chatModel) {
         this.chatModel = chatModel;
     }
 
-    @GetMapping("/ai/generate-azure")
-    public Map<String, Object> generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
-        return Map.of("generation", this.chatModel.call(message));
+    @GetMapping("/ai/generate")
+    public Map<String, Object> generate(@RequestParam(value = "message", defaultValue = "general") String message) {
+        return Map.of("generation", this.chatModel.call(system_prompt + "User Query: " + message));
     }
+
+    // private final AzureOpenAiChatModel chatModel;
+
+    // public ChatController(AzureOpenAiChatModel chatModel) {
+    //     this.chatModel = chatModel;
+    // }
+
+    // @GetMapping("/ai/generate-azure")
+    // public Map<String, Object> generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
+    //     return Map.of("generation", this.chatModel.call(message));
+    // }
 
 }

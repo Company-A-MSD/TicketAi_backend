@@ -3,6 +3,7 @@ package com.backend.ticketai_backend.ticket_management.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.ticketai_backend.aiservice.service.ChatService;
 import com.backend.ticketai_backend.employee_management.model.Employee;
 import com.backend.ticketai_backend.employee_management.service.EmployeeService;
 import com.backend.ticketai_backend.ticket_management.dto.CreateTicketRequestDto;
@@ -37,7 +38,13 @@ public class TicketController
     private JwtUtil jwtUtil;
 
     @Autowired
+    private ChatService chatService;
+
+    @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private EmployeeService employeeService;
 
 
     @PostMapping("/")
@@ -45,7 +52,25 @@ public class TicketController
        
         Claims claims = jwtUtil.getClaimsFromToken(token.substring(7));
         String userId = claims.get("id", String.class);
-        
+
+        // Call the Aiservice to determine the category of the ticket
+        String category = chatService.generate(ticketrequest.getDescription());
+        Employee employee = employeeService.TicketAssignmet(category);
+        if (employee == null) {
+            return ResponseEntity.status(503).body(Map.of("message", "No employee available for this category"));
+        }
+        // Create a new ticket object
+        Ticket ticket = new Ticket();
+        ticket.setSubject(ticketrequest.getSubject());
+        ticket.setDescription(ticketrequest.getDescription());
+        ticket.setCategory(category);
+        ticket.setCreated_by(userId);
+        ticket.setAssigned_to(employee.getName());
+
+        Ticket createdTicket = ticketService.createTicket(ticket);
+        if (createdTicket == null) {
+            return ResponseEntity.ok(Map.of("message", "Failed to create ticket"));
+        }
         return ResponseEntity.ok(Map.of("message", "Ticket created successfully"));
     }
 
