@@ -18,5 +18,9 @@ public class UserService {
         return userRepo.findAll();
     }
 
+    public User getUserById(String id) {
+        return userRepo.findById(id).orElse(null);
+    }
+
     
 }
