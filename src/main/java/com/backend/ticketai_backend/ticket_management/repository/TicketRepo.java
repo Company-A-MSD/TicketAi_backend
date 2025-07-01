@@ -1,7 +1,6 @@
 package com.backend.ticketai_backend.ticket_management.repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

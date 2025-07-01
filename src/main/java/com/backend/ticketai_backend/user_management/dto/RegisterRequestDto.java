@@ -1,26 +1,9 @@
-package com.backend.ticketai_backend.user_management.model;
+package com.backend.ticketai_backend.user_management.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "Users")
-@AllArgsConstructor
-@NoArgsConstructor
-public class User {
-
-    private String id; // MongoDB ObjectId will be used as the ID
+public class RegisterRequestDto {
     private String name;
     private String email;
     private String password;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -45,4 +28,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

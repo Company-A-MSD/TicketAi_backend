@@ -12,7 +12,7 @@ public class Employee {
     private String _id;
 
     private String role;
-    private List<String> assigned_categories;
+    private List<String> assignedCategories;
     private String name;
     private String email;
     private String password;
@@ -38,11 +38,11 @@ public class Employee {
     }
 
     public List<String> getAssigned_categories() {
-        return assigned_categories;
+        return assignedCategories;
     }
 
     public void setAssigned_categories(List<String> assigned_categories) {
-        this.assigned_categories = assigned_categories;
+        this.assignedCategories = assigned_categories;
     }
 
     public String getName() {
