@@ -2,7 +2,6 @@ package com.backend.ticketai_backend.aiservice.service;
 
 import java.util.Map;
 
-import org.springframework.ai.azure.openai.AzureOpenAiChatModel;
 import org.springframework.ai.huggingface.HuggingfaceChatModel;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
