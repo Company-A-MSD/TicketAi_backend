@@ -1,5 +1,6 @@
 package com.backend.ticketai_backend.user_management.controller;
 
+import com.azure.core.annotation.Delete;
 import com.backend.ticketai_backend.employee_management.dto.LoginRequestDto;
 import com.backend.ticketai_backend.user_management.dto.RegisterRequestDto;
 import com.backend.ticketai_backend.user_management.model.User;
@@ -94,6 +95,17 @@ public class UserController {
         boolean deleted = userService.deleteUserById(id);
         if (deleted) {
             return ResponseEntity.ok(Map.of("message", "User deleted successfully", "user_id", id));
+        } else {
+            return ResponseEntity.status(404).body(Map.of("message", "User not found"));
+        }
+    }
+
+    @DeleteMapping("/delete_account")
+    public ResponseEntity<?> deleteAccount(@RequestHeader("Authorization") String token) {
+        String userId = jwtUtil.getClaimsFromToken(token.substring(7)).get("id", String.class);
+        boolean deleted = userService.deleteUserById(userId);
+        if (deleted) {
+            return ResponseEntity.ok(Map.of("message", "Account deleted successfully"));
         } else {
             return ResponseEntity.status(404).body(Map.of("message", "User not found"));
         }
