@@ -25,14 +25,31 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/login")
-    public String postMethodName(@RequestBody String entity) {
-        //TODO: process POST request
-        
-        return entity;
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginData) {
+        User user = userService.login(loginData.getEmail(), loginData.getPassword());
+        if (user != null) {
+            String token = jwtUtil.generateToken(user.getEmail(), "USER", user.getId());
+            return ResponseEntity.ok(Map.of("token", token));
+        } else {
+            return ResponseEntity.status(401).body(Map.of("message", "Invalid email or password"));
+        }
     }
 
-    @PostMapping("/register")
     
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDto request) {
+        User newUser = new User();
+        newUser.setName(request.getName());
+        newUser.setEmail(request.getEmail());
+        newUser.setPassword(request.getPassword());
+
+        User savedUser = userService.register(newUser);
+        if (savedUser != null) {
+            return ResponseEntity.ok(Map.of("message", "User registered successfully", "user_id", savedUser.getId()));
+        } else {
+            return ResponseEntity.status(400).body(Map.of("message", "Email already registered"));
+        }
+    }
 
     
 
