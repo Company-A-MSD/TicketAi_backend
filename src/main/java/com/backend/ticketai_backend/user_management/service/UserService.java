@@ -31,6 +31,21 @@ public class UserService {
         }
         return false;
     }
+    
+    public User login(String email, String password) {
+        User user = userRepo.findByEmail(email);
+        if (user != null && user.getPassword().equals(password)) {
+            return user;
+        }
+        return null; // or throw an exception
+    }
+
+    public User register(User newUser) {
+        if (userRepo.findByEmail(newUser.getEmail()) != null) {
+            return null; // or throw an exception
+        }
+        return userRepo.save(newUser);
+    }
 
     
 }
