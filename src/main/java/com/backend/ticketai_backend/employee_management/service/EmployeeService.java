@@ -27,14 +27,11 @@ public class EmployeeService {
         return employeeRepository.findById(id).orElse(null);
     }
 
-    public Employee updateAvailability(String id, Boolean status) {
-        Employee emp = employeeRepository.findById(id).orElse(null);
-        emp.setAvailability(status);
-        return employeeRepository.save(emp);
-    }
-
     public Employee updateEmployee(String id, Employee data) {
-        Employee emp = employeeRepository.findById(id).orElseThrow();
+        Employee emp = employeeRepository.findById(id).orElse(null);
+        if (emp == null) {
+            return null; // Employee not found
+        }
         emp.setName(data.getName());
         emp.setEmail(data.getEmail());
         emp.setRole(data.getRole());
@@ -63,6 +60,9 @@ public class EmployeeService {
                     if (workload < 5) 
                     {
                         employees.get(i).setWorkload(String.valueOf(workload + 1)); // Increment workload
+                        if (employees.get(i).getWorkload().equals("5")) {
+                            employees.get(i).setAvailability(false); // Set availability to false if workload reaches 5
+                        }
                         employeeRepository.save(employees.get(i)); // Save updated employee
                         return employees.get(i); // Return the first available employee with workload < 5
                     }

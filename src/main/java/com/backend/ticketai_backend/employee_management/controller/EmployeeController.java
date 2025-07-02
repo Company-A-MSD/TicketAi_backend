@@ -30,7 +30,7 @@ public class EmployeeController {
                     String token = jwtUtil.generateToken(emp.getEmail(), emp.getRole(), emp.get_id());
                     return ResponseEntity.ok(Map.of("token", token,"role",emp.getRole()));
                 })
-                .orElse(ResponseEntity.ok(Map.of("message", "Invalid credentials")));
+                .orElse(ResponseEntity.status(400).body(Map.of("message", "Invalid email or password")));
     }
 
 
@@ -40,7 +40,7 @@ public class EmployeeController {
         List<Employee> employees = employeeService.getAllEmployees();
 
         if(employees.isEmpty()) {
-            return ResponseEntity.ok(Map.of("message", "No employees found"));
+            return ResponseEntity.status(404).body(Map.of("message", "No employees found"));
         }
 
         List<Map<String, Object>> result = employees.stream().map(emp -> Map.of(
@@ -72,7 +72,7 @@ public class EmployeeController {
             ));
         }
         else {
-            return ResponseEntity.ok(Map.of("message", "Employee not found"));
+            return ResponseEntity.status(404).body(Map.of("message", "Employee not found"));
         }
       
     }
@@ -81,6 +81,9 @@ public class EmployeeController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateEmployee(@PathVariable String id, @RequestBody Employee updatedData) {
         Employee updated = employeeService.updateEmployee(id, updatedData);
+        if (updated == null) {
+            return ResponseEntity.status(404).body(Map.of("message", "Employee not found"));
+        }
         return ResponseEntity.ok(Map.of("message", "Employee updated successfully", "employee_id", updated.get_id()));
     }
 }

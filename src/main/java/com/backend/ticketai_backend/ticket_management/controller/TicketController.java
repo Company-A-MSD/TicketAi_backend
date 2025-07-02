@@ -56,7 +56,7 @@ public class TicketController
         String category = chatService.generate(ticketrequest.getDescription());
         Employee employee = employeeService.TicketAssignmet(category);
         if (employee == null) {
-            return ResponseEntity.status(503).body(Map.of("message", "No employee available for this category"));
+            return ResponseEntity.ok(Map.of("message", "No employee available for this category","success", false));
         }
         // Create a new ticket object
         Ticket ticket = new Ticket();
@@ -68,7 +68,7 @@ public class TicketController
 
         Ticket createdTicket = ticketService.createTicket(ticket);
         if (createdTicket == null) {
-            return ResponseEntity.ok(Map.of("message", "Failed to create ticket"));
+            return ResponseEntity.status(500).body(Map.of("message", "Failed to create ticket"));
         }
         return ResponseEntity.ok(Map.of("message", "Ticket created successfully"));
     }
@@ -82,7 +82,7 @@ public class TicketController
         List<Ticket> tickets = ticketService.getTicketsByUserId(userId);
         // Convert the tickets to a suitable response format
         if(tickets.isEmpty()){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(Map.of("message", "No tickets found for this user"));
         }
 
         List<Map<String, Object>> result = tickets.stream().map(ticket -> Map.of(
@@ -112,16 +112,16 @@ public class TicketController
                     "created_at", (Object) ticket.getCreated_at()
             ));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(Map.of("message", "Ticket not found"));
         }
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<?> updateTicket(@RequestParam String param,@RequestBody UpdateTicketStatusDto updateTicketStatusDto) {
+    public ResponseEntity<?> updateTicket(@RequestParam String id,@RequestBody UpdateTicketStatusDto updateTicketStatusDto) {
 
-        Ticket ticket = ticketService.UpdateTicket(param, updateTicketStatusDto);
+        Ticket ticket = ticketService.UpdateTicket(id, updateTicketStatusDto);
         if (ticket == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(Map.of("message", "Ticket not found"));
         }
         return ResponseEntity.ok(Map.of("message", "Ticket updated successfully"));
     }   
@@ -133,7 +133,7 @@ public class TicketController
 
         List<Ticket> tickets = ticketService.getAssignedTickets(empId);
         if (tickets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(Map.of("message", "No assigned tickets found"));
         }
 
         return ResponseEntity.ok(
@@ -158,7 +158,7 @@ public class TicketController
 
        List<Ticket> tickets = ticketService.getAllTickets();
         if (tickets.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(Map.of("message", "No tickets found"));
         }
        
        return ResponseEntity.ok(

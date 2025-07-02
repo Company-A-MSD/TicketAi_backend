@@ -1,7 +1,9 @@
 package com.backend.ticketai_backend.aiservice.service;
 
 import org.springframework.ai.huggingface.HuggingfaceChatModel;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ChatService {
 
     private static final String system_prompt = "You are a customer support agent for customer support tickets management for a company. Your task is to based on the provided query of the user determine the category of the user query. Available categories are billing,technical and informative. If user query is related to something else then return 'other'.\n" +

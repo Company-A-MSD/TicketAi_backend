@@ -3,10 +3,12 @@ package com.backend.ticketai_backend.user_management.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.backend.ticketai_backend.user_management.model.User;
 import com.backend.ticketai_backend.user_management.repository.UserRepo;
 
+@Service
 public class UserService {
 
     @Autowired

@@ -29,15 +29,4 @@ public class ChatController {
         return Map.of("generation", this.chatModel.call(system_prompt + "User Query: " + message));
     }
 
-    // private final AzureOpenAiChatModel chatModel;
-
-    // public ChatController(AzureOpenAiChatModel chatModel) {
-    //     this.chatModel = chatModel;
-    // }
-
-    // @GetMapping("/ai/generate-azure")
-    // public Map<String, Object> generate(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
-    //     return Map.of("generation", this.chatModel.call(message));
-    // }
-
 }
