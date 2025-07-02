@@ -1,7 +1,10 @@
 package com.backend.ticketai_backend.user_management.controller;
 
+import com.backend.ticketai_backend.employee_management.dto.LoginRequestDto;
+import com.backend.ticketai_backend.user_management.dto.RegisterRequestDto;
 import com.backend.ticketai_backend.user_management.model.User;
 import com.backend.ticketai_backend.user_management.service.UserService;
+import com.backend.ticketai_backend.util.JwtUtil;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginData) {
         User user = userService.login(loginData.getEmail(), loginData.getPassword());
@@ -35,7 +41,6 @@ public class UserController {
         }
     }
 
-    
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto request) {
         User newUser = new User();
@@ -50,10 +55,7 @@ public class UserController {
             return ResponseEntity.status(400).body(Map.of("message", "Email already registered"));
         }
     }
-
-
-    
-
+ 
    @GetMapping("/users")
    public ResponseEntity<?> getAllUsers(@RequestParam String param) {
         List<User> users = userService.getAllUsers();

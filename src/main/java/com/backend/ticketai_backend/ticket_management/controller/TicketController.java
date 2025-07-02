@@ -6,10 +6,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.ticketai_backend.aiservice.service.ChatService;
 import com.backend.ticketai_backend.employee_management.model.Employee;
 import com.backend.ticketai_backend.employee_management.service.EmployeeService;
+import com.backend.ticketai_backend.notification.MailDetailsDTO;
+import com.backend.ticketai_backend.notification.MailService;
 import com.backend.ticketai_backend.ticket_management.dto.CreateTicketRequestDto;
 import com.backend.ticketai_backend.ticket_management.dto.UpdateTicketStatusDto;
 import com.backend.ticketai_backend.ticket_management.model.Ticket;
 import com.backend.ticketai_backend.ticket_management.service.TicketService;
+import com.backend.ticketai_backend.user_management.model.User;
+import com.backend.ticketai_backend.user_management.service.UserService;
 import com.backend.ticketai_backend.util.JwtUtil;
 
 import io.jsonwebtoken.Claims;
@@ -45,7 +49,12 @@ public class TicketController
     @Autowired
     private EmployeeService employeeService;
 
+    @Autowired
+    private UserService userService;
 
+    @Autowired
+    private MailService mailService;
+    
     @PostMapping("/")
     public ResponseEntity<?> CreateTicket(@RequestBody CreateTicketRequestDto ticketrequest,@RequestHeader("Authorization") String token){
        
@@ -56,7 +65,7 @@ public class TicketController
         String category = chatService.generate(ticketrequest.getDescription());
         Employee employee = employeeService.TicketAssignmet(category);
         if (employee == null) {
-            return ResponseEntity.ok(Map.of("message", "No employee available for this category","success", false));
+            return ResponseEntity.status(404).body(Map.of("message", "No employee available for this category"));
         }
         // Create a new ticket object
         Ticket ticket = new Ticket();
@@ -70,7 +79,18 @@ public class TicketController
         if (createdTicket == null) {
             return ResponseEntity.status(500).body(Map.of("message", "Failed to create ticket"));
         }
-        return ResponseEntity.ok(Map.of("message", "Ticket created successfully"));
+
+        User user=userService.getUserById(userId);
+        MailDetailsDTO mailDetails = new MailDetailsDTO();
+        mailDetails.setToMail(user.getEmail());
+        mailDetails.setSubject("Ticket Created");
+        mailDetails.setMessage("Your ticket has been created successfully with ID: " + createdTicket.get_id() + ". Assigned to: " + employee.getName());
+        Boolean message = mailService.sendEmail(mailDetails);
+        if(message)
+        {
+            return ResponseEntity.ok(Map.of("message", "Ticket created successfully and email sent to your email address"));
+        }
+        return ResponseEntity.ok(Map.of("message", "Ticket created successfully but failed to send email notification"));
     }
 
     @GetMapping("/")
