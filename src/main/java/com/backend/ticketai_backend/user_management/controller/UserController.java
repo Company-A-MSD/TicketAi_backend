@@ -2,6 +2,8 @@ package com.backend.ticketai_backend.user_management.controller;
 
 import com.azure.core.annotation.Delete;
 import com.backend.ticketai_backend.employee_management.dto.LoginRequestDto;
+import com.backend.ticketai_backend.ticket_management.model.Ticket;
+import com.backend.ticketai_backend.ticket_management.service.TicketService;
 import com.backend.ticketai_backend.user_management.dto.RegisterRequestDto;
 import com.backend.ticketai_backend.user_management.model.User;
 import com.backend.ticketai_backend.user_management.service.UserService;
@@ -15,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -27,6 +28,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TicketService ticketService;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -58,7 +62,7 @@ public class UserController {
     }
  
    @GetMapping("/users")
-   public ResponseEntity<?> getAllUsers(@RequestParam String param) {
+   public ResponseEntity<?> getAllUsers() {
         List<User> users = userService.getAllUsers();
         if (users.isEmpty()) {
             return ResponseEntity.status(404).body(Map.of("message", "No users found"));
@@ -81,11 +85,13 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.status(404).body(Map.of("message", "User not found"));
         }
+        List<Ticket> tickets = ticketService.getTicketsByUserId(id);
         return ResponseEntity.ok(
             Map.of(
                 "id", user.getId(),
                 "name", user.getName(),
-                "email", user.getEmail()
+                "email", user.getEmail(),
+                "tickets",tickets
             )
         );
     }

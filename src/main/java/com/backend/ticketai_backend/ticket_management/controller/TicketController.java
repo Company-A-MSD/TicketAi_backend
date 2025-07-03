@@ -29,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 
 @RestController
@@ -107,11 +105,11 @@ public class TicketController
 
         List<Map<String, Object>> result = tickets.stream().map(ticket -> Map.of(
                 "ticket_id", (Object)  ticket.get_id(),
-                "title", (Object) ticket.getSubject(),
+                "subject", (Object) ticket.getSubject(),
                 "description", (Object) ticket.getDescription(),
                 "status", (Object) ticket.getStatus(),
                 "category", (Object) ticket.getCategory(),
-                "assigned_to", (Object) ticket.getAssigned_to(),
+                "priority", (Object) ticket.getPriority(), 
                 "created_at", (Object) ticket.getCreated_at()
         )).toList();
         return ResponseEntity.ok(result);
@@ -122,13 +120,14 @@ public class TicketController
         // Call the service to get ticket by ID
         Ticket ticket = ticketService.getTicketById(id);
         if (ticket != null) {
+            Employee employee = employeeService.getEmployeeById(ticket.getAssigned_to());
             return ResponseEntity.ok(Map.of(
                     "ticket_id", (Object) ticket.get_id(),
-                    "title", (Object) ticket.getSubject(),
+                    "subject", (Object) ticket.getSubject(),
                     "description", (Object) ticket.getDescription(),
                     "status", (Object) ticket.getStatus(),
                     "category", (Object) ticket.getCategory(),
-                    "assigned_to", (Object) ticket.getAssigned_to(),
+                    "assigned_to", (Object) employee.getName(),
                     "created_at", (Object) ticket.getCreated_at()
             ));
         } else {
@@ -137,7 +136,7 @@ public class TicketController
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<?> updateTicket(@RequestParam String id,@RequestBody UpdateTicketStatusDto updateTicketStatusDto) {
+    public ResponseEntity<?> updateTicket(@PathVariable String id,@RequestBody UpdateTicketStatusDto updateTicketStatusDto) {
 
         Ticket ticket = ticketService.UpdateTicket(id, updateTicketStatusDto);
         if (ticket == null) {
@@ -161,7 +160,7 @@ public class TicketController
                 
                 return Map.of(
                     "ticket_id", ticket.get_id(),
-                    "title", ticket.getSubject(),
+                    "subject", ticket.getSubject(),
                     "description", ticket.getDescription(),
                     "status", ticket.getStatus(),
                     "category", ticket.getCategory(),
@@ -186,7 +185,7 @@ public class TicketController
                 
                 return Map.of(
                     "ticket_id", ticket.get_id(),
-                    "title", ticket.getSubject(),
+                    "subject", ticket.getSubject(),
                     "description", ticket.getDescription(),
                     "status", ticket.getStatus(),
                     "category", ticket.getCategory(),
