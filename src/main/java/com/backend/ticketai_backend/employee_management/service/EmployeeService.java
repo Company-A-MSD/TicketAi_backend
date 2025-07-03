@@ -32,11 +32,13 @@ public class EmployeeService {
         if (emp == null) {
             return null; // Employee not found
         }
-        emp.setName(data.getName());
-        emp.setEmail(data.getEmail());
-        emp.setRole(data.getRole());
-        emp.setAvailability(data.getAvailability());
-        emp.setAssigned_categories(data.getAssigned_categories());
+
+        if (data.getName() != null) emp.setName(data.getName());
+        if (data.getEmail() != null) emp.setEmail(data.getEmail());
+        if (data.getRole()!= null) emp.setRole(data.getRole());
+        if (data.getAvailability() != null) emp.setAvailability(data.getAvailability());
+        if (data.getAssigned_categories() != null)emp.setAssigned_categories(data.getAssigned_categories());
+        
         return employeeRepository.save(emp);
     }
 

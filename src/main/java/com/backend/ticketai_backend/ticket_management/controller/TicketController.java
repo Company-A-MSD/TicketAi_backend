@@ -126,6 +126,7 @@ public class TicketController
                     "subject", (Object) ticket.getSubject(),
                     "description", (Object) ticket.getDescription(),
                     "status", (Object) ticket.getStatus(),
+                    "priority", (Object) ticket.getPriority(),
                     "category", (Object) ticket.getCategory(),
                     "assigned_to", (Object) employee.getName(),
                     "created_at", (Object) ticket.getCreated_at()
@@ -142,7 +143,7 @@ public class TicketController
         if (ticket == null) {
             return ResponseEntity.status(404).body(Map.of("message", "Ticket not found"));
         }
-        return ResponseEntity.ok(Map.of("message", "Ticket updated successfully"));
+        return ResponseEntity.ok(Map.of("message", "Ticket updated successfully","ticket_id", ticket.get_id(), "status", ticket.getStatus()));
     }   
     
     @GetMapping("/assigned")
@@ -164,6 +165,7 @@ public class TicketController
                     "description", ticket.getDescription(),
                     "status", ticket.getStatus(),
                     "category", ticket.getCategory(),
+                    "priority", ticket.getPriority(),
                     "assigned_to", ticket.getAssigned_to(),
                     "created_by", ticket.getCreated_by(),
                     "created_at", ticket.getCreated_at()
@@ -189,6 +191,7 @@ public class TicketController
                     "description", ticket.getDescription(),
                     "status", ticket.getStatus(),
                     "category", ticket.getCategory(),
+                    "priority", ticket.getPriority(),
                     "assigned_to", ticket.getAssigned_to(),
                     "created_at", ticket.getCreated_at(),
                     "created_by", ticket.getCreated_by()

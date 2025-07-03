@@ -1,6 +1,5 @@
 package com.backend.ticketai_backend.user_management.controller;
 
-import com.azure.core.annotation.Delete;
 import com.backend.ticketai_backend.employee_management.dto.LoginRequestDto;
 import com.backend.ticketai_backend.ticket_management.model.Ticket;
 import com.backend.ticketai_backend.ticket_management.service.TicketService;
