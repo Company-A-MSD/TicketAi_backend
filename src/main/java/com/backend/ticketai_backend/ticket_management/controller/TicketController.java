@@ -60,8 +60,8 @@ public class TicketController
         String userId = claims.get("id", String.class);
 
         // Call the Aiservice to determine the category of the ticket
-        String category = chatService.generate(ticketrequest.getDescription());
-        Employee employee = employeeService.TicketAssignmet(category);
+        Map<String,String> response = chatService.generate(ticketrequest.getDescription());
+        Employee employee = employeeService.TicketAssignmet(response.get("Category"));
         if (employee == null) {
             return ResponseEntity.status(404).body(Map.of("message", "No employee available for this category"));
         }
@@ -69,8 +69,9 @@ public class TicketController
         Ticket ticket = new Ticket();
         ticket.setSubject(ticketrequest.getSubject());
         ticket.setDescription(ticketrequest.getDescription());
-        ticket.setCategory(category);
+        ticket.setCategory(response.get("Category"));
         ticket.setStatus("In progress");
+        ticket.setPriority(response.get("Priority"));
         ticket.setCreated_by(userId);
         ticket.setAssigned_to(employee.getName());
 
