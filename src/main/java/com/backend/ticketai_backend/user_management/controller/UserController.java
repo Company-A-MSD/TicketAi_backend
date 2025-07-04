@@ -39,7 +39,7 @@ public class UserController {
         User user = userService.login(loginData.getEmail(), loginData.getPassword());
         if (user != null) {
             String token = jwtUtil.generateToken(user.getEmail(), "USER", user.getId());
-            return ResponseEntity.ok(Map.of("token", token,"role","USER"));
+            return ResponseEntity.ok(Map.of("token", token,"role","USER","id", user.getId(), "name", user.getName(),"email", user.getEmail()));
         } else {
             return ResponseEntity.status(401).body(Map.of("message", "Invalid email or password"));
         }
