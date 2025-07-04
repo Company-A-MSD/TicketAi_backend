@@ -70,6 +70,7 @@ public class TicketController
         ticket.setSubject(ticketrequest.getSubject());
         ticket.setDescription(ticketrequest.getDescription());
         ticket.setCategory(category);
+        ticket.setStatus("In progress");
         ticket.setCreated_by(userId);
         ticket.setAssigned_to(employee.getName());
 
