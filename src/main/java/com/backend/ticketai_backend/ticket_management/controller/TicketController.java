@@ -21,6 +21,7 @@ import io.jsonwebtoken.Claims;
 import java.util.List;
 import java.util.Map;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -99,7 +100,7 @@ public class TicketController
         String userId = claims.get("id", String.class);
         
         // Call the service to get tickets by user ID
-        List<Ticket> tickets = ticketService.getTicketsByUserId(userId);
+        List<Ticket> tickets = ticketService.getTicketsByUserId(new ObjectId(userId));
         // Convert the tickets to a suitable response format
         if(tickets.isEmpty()){
             return ResponseEntity.status(404).body(Map.of("message", "No tickets found for this user"));
@@ -153,7 +154,7 @@ public class TicketController
         Claims claims = jwtUtil.getClaimsFromToken(token.substring(7));
         String empId = claims.get("id", String.class);
 
-        List<Ticket> tickets = ticketService.getAssignedTickets(empId);
+        List<Ticket> tickets = ticketService.getAssignedTickets(new ObjectId(empId));
         if (tickets.isEmpty()) {
             return ResponseEntity.status(404).body(Map.of("message", "No assigned tickets found"));
         }

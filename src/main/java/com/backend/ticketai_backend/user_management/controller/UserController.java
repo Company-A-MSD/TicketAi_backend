@@ -9,6 +9,7 @@ import com.backend.ticketai_backend.user_management.service.UserService;
 import com.backend.ticketai_backend.util.JwtUtil;
 
 import org.springframework.http.ResponseEntity;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,7 +85,7 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.status(404).body(Map.of("message", "User not found"));
         }
-        List<Ticket> tickets = ticketService.getTicketsByUserId(id);
+        List<Ticket> tickets = ticketService.getTicketsByUserId(new ObjectId(id));
         return ResponseEntity.ok(
             Map.of(
                 "id", user.getId(),

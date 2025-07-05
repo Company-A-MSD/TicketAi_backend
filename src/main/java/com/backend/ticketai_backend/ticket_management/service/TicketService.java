@@ -2,6 +2,7 @@ package com.backend.ticketai_backend.ticket_management.service;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class TicketService {
     @Autowired
     private TicketRepo ticketRepo;
 
-    public List<Ticket> getTicketsByUserId(String userId) {
+    public List<Ticket> getTicketsByUserId(ObjectId userId) {
         // Logic to fetch tickets by user ID
 
         List<Ticket> results = ticketRepo.findByCreated(userId);
@@ -38,7 +39,7 @@ public class TicketService {
         return null;
     }
 
-    public List<Ticket> getAssignedTickets(String empId)
+    public List<Ticket> getAssignedTickets(ObjectId empId)
     {
         return ticketRepo.findByAssigned(empId);
     }
