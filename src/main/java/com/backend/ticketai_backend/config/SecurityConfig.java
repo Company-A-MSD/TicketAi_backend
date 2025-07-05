@@ -49,9 +49,6 @@ public class SecurityConfig {
         config.addAllowedOrigin("http://localhost:3000"); // Add your frontend URL
         config.addAllowedOrigin("http://localhost:8080"); // Add other allowed origins
         
-        // Option 2: For production - be more restrictive
-        // config.addAllowedOrigin("https://yourdomain.com");
-        
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true);
