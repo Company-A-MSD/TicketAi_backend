@@ -1,5 +1,8 @@
 package com.backend.ticketai_backend.ticket_management.model;
 
+import java.util.Date;
+
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,10 +18,10 @@ public class Ticket {
     private String status;
     private String priority;
     private String category;
-    private String assigned;
-    private String created;
-    private String created_at;
-    private String updated_at;
+    private ObjectId assigned;
+    private ObjectId created;
+    private Date created_at;
+    private Date updated_at;
     private String channel;
 
 
@@ -71,35 +74,35 @@ public class Ticket {
         this.category = category;
     }
 
-    public String getAssigned_to() {
+    public ObjectId getAssigned_to() {
         return assigned;
     }
 
-    public void setAssigned_to(String assigned) {
+    public void setAssigned_to(ObjectId assigned) {
         this.assigned = assigned;
     }
 
-    public String getCreated_by() {
+    public ObjectId getCreated_by() {
         return created;
     }
 
-    public void setCreated_by(String created) {
+    public void setCreated_by(ObjectId created) {
         this.created = created;
     }
 
-    public String getCreated_at() {
+    public Date getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(String created_at) {
+    public void setCreated_at(Date created_at) {
         this.created_at = created_at;
     }
 
-    public String getUpdated_at() {
+    public Date getUpdated_at() {
         return updated_at;
     }
 
-    public void setUpdated_at(String updated_at) {
+    public void setUpdated_at(Date updated_at) {
         this.updated_at = updated_at;
     }
 

@@ -18,6 +18,7 @@ import com.backend.ticketai_backend.util.JwtUtil;
 
 import io.jsonwebtoken.Claims;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -73,8 +74,11 @@ public class TicketController
         ticket.setCategory(response.get("Category"));
         ticket.setStatus("In progress");
         ticket.setPriority(response.get("Priority"));
-        ticket.setCreated_by(userId);
-        ticket.setAssigned_to(employee.getName());
+        ticket.setCreated_by(new ObjectId(userId));
+        ticket.setAssigned_to(new ObjectId(employee.get_id()));
+        ticket.setCreated_at(new Date(System.currentTimeMillis()));
+        ticket.setUpdated_at(new Date(System.currentTimeMillis()));
+        ticket.setChannel(ticketrequest.getChannel());
 
         Ticket createdTicket = ticketService.createTicket(ticket);
         if (createdTicket == null) {
@@ -123,7 +127,7 @@ public class TicketController
         // Call the service to get ticket by ID
         Ticket ticket = ticketService.getTicketById(id);
         if (ticket != null) {
-            Employee employee = employeeService.getEmployeeById(ticket.getAssigned_to());
+            Employee employee = employeeService.getEmployeeById(ticket.getAssigned_to().toString());
             return ResponseEntity.ok(Map.of(
                     "ticket_id", (Object) ticket.get_id(),
                     "subject", (Object) ticket.getSubject(),
@@ -161,7 +165,7 @@ public class TicketController
 
         return ResponseEntity.ok(
             tickets.stream().map(ticket -> {
-                
+                User user = userService.getUserById(ticket.getCreated_by().toString());
                 return Map.of(
                     "ticket_id", ticket.get_id(),
                     "subject", ticket.getSubject(),
@@ -169,8 +173,7 @@ public class TicketController
                     "status", ticket.getStatus(),
                     "category", ticket.getCategory(),
                     "priority", ticket.getPriority(),
-                    "assigned_to", ticket.getAssigned_to(),
-                    "created_by", ticket.getCreated_by(),
+                    "created_by", user.getName(),
                     "created_at", ticket.getCreated_at()
                 );
             }).toList()
@@ -189,15 +192,15 @@ public class TicketController
             tickets.stream().map(ticket -> {
                 
                 return Map.of(
-                    "ticket_id", ticket.get_id(),
+                    "ticket_id", ticket.get_id().toString(),
                     "subject", ticket.getSubject(),
                     "description", ticket.getDescription(),
                     "status", ticket.getStatus(),
                     "category", ticket.getCategory(),
                     "priority", ticket.getPriority(),
-                    "assigned_to", ticket.getAssigned_to(),
+                    "assigned_to", ticket.getAssigned_to().toString(),
                     "created_at", ticket.getCreated_at(),
-                    "created_by", ticket.getCreated_by()
+                    "created_by", ticket.getCreated_by().toString()
                 );
             }).toList()
         );

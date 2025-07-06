@@ -2,6 +2,7 @@ package com.backend.ticketai_backend.employee_management.service;
 
 import com.backend.ticketai_backend.employee_management.model.Employee;
 import com.backend.ticketai_backend.employee_management.repository.EmployeeRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,11 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public Optional<Employee> login(String email, String password) {
-        return employeeRepository.findByEmail(email)
-                .filter(emp -> emp.getPassword().equals(password)); // NOTE: Use hashed passwords in production
+        Employee emp = employeeRepository.findByEmail(email);
+        if (emp != null && emp.getPassword().equals(password)) { // NOTE: Use hashed passwords in production
+            return Optional.of(emp);
+        }
+        return Optional.empty();
     }
 
     public List<Employee> getAllEmployees() {
@@ -40,6 +44,11 @@ public class EmployeeService {
         if (data.getAssigned_categories() != null)emp.setAssigned_categories(data.getAssigned_categories());
         
         return employeeRepository.save(emp);
+    }
+
+    public Employee getEmployeebyEmail(String email)
+    {
+        return employeeRepository.findByEmail(email);
     }
 
     public Employee TicketAssignmet(String category)
