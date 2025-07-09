@@ -35,6 +35,7 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    //Employee login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginData) {
         User user = userService.login(loginData.getEmail(), loginData.getPassword());
