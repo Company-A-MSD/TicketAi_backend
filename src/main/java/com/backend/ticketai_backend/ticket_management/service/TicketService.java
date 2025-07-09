@@ -1,10 +1,14 @@
 package com.backend.ticketai_backend.ticket_management.service;
 
+import java.sql.Date;
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.backend.ticketai_backend.employee_management.model.Employee;
+import com.backend.ticketai_backend.employee_management.service.EmployeeService;
 import com.backend.ticketai_backend.ticket_management.dto.UpdateTicketStatusDto;
 import com.backend.ticketai_backend.ticket_management.model.Ticket;
 import com.backend.ticketai_backend.ticket_management.repository.TicketRepo;
@@ -15,7 +19,10 @@ public class TicketService {
     @Autowired
     private TicketRepo ticketRepo;
 
-    public List<Ticket> getTicketsByUserId(String userId) {
+    @Autowired
+    private EmployeeService employeeService;
+
+    public List<Ticket> getTicketsByUserId(ObjectId userId) {
         // Logic to fetch tickets by user ID
 
         List<Ticket> results = ticketRepo.findByCreated(userId);
@@ -31,14 +38,22 @@ public class TicketService {
         // Logic to update a ticket's status
         Ticket ticket = ticketRepo.findById(ticketId).orElse(null);
         if (ticket != null) {
-            ticket.setStatus(updateTicketStatusDto.getStatus());
-            ticket.setAssigned_to(updateTicketStatusDto.getAssigned_employee_email());
+            if(updateTicketStatusDto.getStatus()!=null)ticket.setStatus(updateTicketStatusDto.getStatus());
+            if(updateTicketStatusDto.getAssigned_employee_email()!=null)
+            {
+                Employee emp =employeeService.getEmployeebyEmail(updateTicketStatusDto.getAssigned_employee_email());
+                if(emp!=null)
+                {
+                    ticket.setAssigned_to(new ObjectId(emp.get_id()));
+                }
+            }
+            ticket.setUpdated_at(new Date(System.currentTimeMillis()));
             return ticketRepo.save(ticket);
         }
         return null;
     }
 
-    public List<Ticket> getAssignedTickets(String empId)
+    public List<Ticket> getAssignedTickets(ObjectId empId)
     {
         return ticketRepo.findByAssigned(empId);
     }

@@ -28,7 +28,7 @@ public class EmployeeController {
         return employeeService.login(loginData.getEmail(), loginData.getPassword())
                 .map(emp -> {
                     String token = jwtUtil.generateToken(emp.getEmail(), emp.getRole(), emp.get_id());
-                    return ResponseEntity.ok(Map.of("token", token,"role",emp.getRole()));
+                    return ResponseEntity.ok(Map.of("token", token,"role",emp.getRole(), "id", emp.get_id(), "name", emp.getName(), "email", emp.getEmail()));
                 })
                 .orElse(ResponseEntity.status(400).body(Map.of("message", "Invalid email or password")));
     }

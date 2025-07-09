@@ -2,6 +2,7 @@ package com.backend.ticketai_backend.employee_management.service;
 
 import com.backend.ticketai_backend.employee_management.model.Employee;
 import com.backend.ticketai_backend.employee_management.repository.EmployeeRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,11 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public Optional<Employee> login(String email, String password) {
-        return employeeRepository.findByEmail(email)
-                .filter(emp -> emp.getPassword().equals(password)); // NOTE: Use hashed passwords in production
+        Employee emp = employeeRepository.findByEmail(email);
+        if (emp != null && emp.getPassword().equals(password)) { // NOTE: Use hashed passwords in production
+            return Optional.of(emp);
+        }
+        return Optional.empty();
     }
 
     public List<Employee> getAllEmployees() {
@@ -32,12 +36,19 @@ public class EmployeeService {
         if (emp == null) {
             return null; // Employee not found
         }
-        emp.setName(data.getName());
-        emp.setEmail(data.getEmail());
-        emp.setRole(data.getRole());
-        emp.setAvailability(data.getAvailability());
-        emp.setAssigned_categories(data.getAssigned_categories());
+
+        if (data.getName() != null) emp.setName(data.getName());
+        if (data.getEmail() != null) emp.setEmail(data.getEmail());
+        if (data.getRole()!= null) emp.setRole(data.getRole());
+        if (data.getAvailability() != null) emp.setAvailability(data.getAvailability());
+        if (data.getAssigned_categories() != null)emp.setAssigned_categories(data.getAssigned_categories());
+        
         return employeeRepository.save(emp);
+    }
+
+    public Employee getEmployeebyEmail(String email)
+    {
+        return employeeRepository.findByEmail(email);
     }
 
     public Employee TicketAssignmet(String category)

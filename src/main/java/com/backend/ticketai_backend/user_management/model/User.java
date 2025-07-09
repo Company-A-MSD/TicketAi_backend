@@ -9,17 +9,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 public class User {
 
-    private String id; // MongoDB ObjectId will be used as the ID
+    private String _id; // MongoDB ObjectId will be used as the ID
     private String name;
     private String email;
     private String password;
 
     public String getId() {
-        return id;
+        return _id;
     }
 
     public void setId(String id) {
-        this.id = id;
+        this._id = id;
     }
 
     public String getName() {
