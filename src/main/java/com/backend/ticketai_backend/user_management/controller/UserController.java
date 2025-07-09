@@ -47,6 +47,7 @@ public class UserController {
         }
     }
 
+    //Employee register
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto request) {
         User newUser = new User();
