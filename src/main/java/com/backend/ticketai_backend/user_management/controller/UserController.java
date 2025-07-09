@@ -35,6 +35,7 @@ public class UserController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    //Employee login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto loginData) {
         User user = userService.login(loginData.getEmail(), loginData.getPassword());
@@ -46,6 +47,7 @@ public class UserController {
         }
     }
 
+    //Employee register
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDto request) {
         User newUser = new User();
