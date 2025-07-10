@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.backend.ticketai_backend.employee_management.model.Employee;
 import com.backend.ticketai_backend.employee_management.service.EmployeeService;
+import com.backend.ticketai_backend.notification.MailDetailsDTO;
+import com.backend.ticketai_backend.notification.MailService;
 import com.backend.ticketai_backend.ticket_management.dto.UpdateTicketStatusDto;
 import com.backend.ticketai_backend.ticket_management.model.Ticket;
 import com.backend.ticketai_backend.ticket_management.repository.TicketRepo;
@@ -21,6 +23,9 @@ public class TicketService {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private MailService mailService;
 
     public List<Ticket> getTicketsByUserId(ObjectId userId) {
         // Logic to fetch tickets by user ID
@@ -38,7 +43,18 @@ public class TicketService {
         // Logic to update a ticket's status
         Ticket ticket = ticketRepo.findById(ticketId).orElse(null);
         if (ticket != null) {
-            if(updateTicketStatusDto.getStatus()!=null)ticket.setStatus(updateTicketStatusDto.getStatus());
+            if(updateTicketStatusDto.getStatus()!=null)
+            {
+                ticket.setStatus(updateTicketStatusDto.getStatus());
+                if (updateTicketStatusDto.getStatus().equals("Complete")) 
+                {
+                    MailDetailsDTO mailDetailsDTO = new MailDetailsDTO();
+                    mailDetailsDTO.setMessage("Your ticket with ID " + ticketId + " has been marked as complete.");
+                    mailDetailsDTO.setSubject("Ticket Status Update");
+                    mailDetailsDTO.setToMail(ticket.getCreated_by().toString());
+                    mailService.sendEmail(mailDetailsDTO);
+                }
+            }
             if(updateTicketStatusDto.getAssigned_employee_email()!=null)
             {
                 Employee emp =employeeService.getEmployeebyEmail(updateTicketStatusDto.getAssigned_employee_email());
