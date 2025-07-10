@@ -77,7 +77,7 @@ public class EmployeeController {
       
     }
 
-    // 5. UPDATE EMPLOYEE DETAILS
+    // 5. UPDATE EMPLOYEES DETAILS 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateEmployee(@PathVariable String id, @RequestBody Employee updatedData) {
         Employee updated = employeeService.updateEmployee(id, updatedData);
